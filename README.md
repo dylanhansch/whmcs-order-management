@@ -7,7 +7,6 @@ WHMCS module to automate several order management tasks. Here are the following 
 # Installation
 1. Download zip of repo
 2. Copy the "order_management" folder to your WHMCS installation (modules/addons).
-3. Rename the six "adminuser" variables in hooks.php to the username of the admin you'd like to use for the API calls. (Hopefully we can automate this - See Issue #2)
 
 # Contributions
 Feel free to fork the repo, make changes, then create a pull request! For ideas on what you can help with, check the project issues.
