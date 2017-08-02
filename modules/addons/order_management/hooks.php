@@ -24,9 +24,8 @@ add_hook('PreAutomationTask', 1, function($vars) {
         'status' => 'Pending',
         'limitnum' => '100',
     );
-    $adminuser = 'admin';
     
-    $results = localAPI($command, $values, $adminuser);
+    $results = localAPI($command, $values);
     
     if ($results['result'] == 'success') {
         $numReturned = $results['numreturned'] - 1;
@@ -39,9 +38,8 @@ add_hook('PreAutomationTask', 1, function($vars) {
                 $postData = array(
                     'orderid' => $orderID,
                 );
-                $adminuser = 'admin';
                 
-                $cancelOrderResults = localAPI($command, $postData, $adminuser);
+                $cancelOrderResults = localAPI($command, $postData);
                 
                 if ($cancelOrderResults['result'] != 'success') {
                     logActivity("An error occured with cancelling order $orderID: " . $cancelOrderResults['result']);
@@ -60,9 +58,8 @@ add_hook('PreAutomationTask', 1, function($vars) {
         'status' => 'Unpaid',
         'limitnum' => '100',
     );
-    $adminuser = 'admin';
     
-    $results = localAPI($command, $values, $adminuser);
+    $results = localAPI($command, $values);
     
     if ($results['result'] == 'success') {
         $numReturned = $results['numreturned'] - 1;
@@ -76,9 +73,8 @@ add_hook('PreAutomationTask', 1, function($vars) {
                     'invoiceid' => $invoiceID,
                     'status' => 'Cancelled',
                 );
-                $adminuser = 'admin';
                 
-                $cancelInvoiceResults = localAPI($command, $values, $adminuser);
+                $cancelInvoiceResults = localAPI($command, $values);
                 
                 if ($cancelInvoiceResults['result'] != 'success') {
                     logActivity("An error occured with cancelling invoice $invoiceID: " . $cancelInvoiceResults['result']);
@@ -101,9 +97,8 @@ add_hook('InvoicePaid', 1, function($vars) {
         'status' => 'Pending',
         'limitnum' => '100',
     );
-    $adminuser = 'admin';
     
-    $results = localAPI($command, $values, $adminuser);
+    $results = localAPI($command, $values);
     
     if ($results['result'] == 'success') {
         $numReturned = $results['numreturned'] - 1;
@@ -116,9 +111,8 @@ add_hook('InvoicePaid', 1, function($vars) {
                 $values = array(
                     'orderid' => $orderID,
                 );
-                $adminuser = 'admin';
                 
-                $acceptOrderResults = localAPI($command, $values, $adminuser);
+                $acceptOrderResults = localAPI($command, $values);
                 
                 if ($acceptOrderResults['result'] != 'success') {
                     logActivity("An error occured accepting order $invoiceID: " . $acceptOrderResults['result']);
