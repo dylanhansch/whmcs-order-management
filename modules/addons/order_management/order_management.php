@@ -15,8 +15,8 @@
  * @author Dylan Hansch <dylan@dylanhansch.net>
  */
  
-if (!defined("WHMCS")) {
-	die("This file cannot be accessed directly.");
+if (!defined('WHMCS')) {
+	die('This file cannot be accessed directly.');
 }
 
 function order_management_config() {
