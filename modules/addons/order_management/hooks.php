@@ -40,8 +40,6 @@ add_hook('PreAutomationTask', 1, function($vars) {
 		logActivity('[Order Management] ' . $e);
 	}
 
-	logActivity($cancelAfterDays);
-
 	/*
 	 * Accept paid but still pending orders and cancel aged orders
 	 */
