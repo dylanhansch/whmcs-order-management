@@ -28,7 +28,7 @@ function order_management_config() {
 		'version' => '1.0',
 		'fields' => array(
 			'cancelAfter' => array(
-				'FriendlyName' =>  'Cancel unpaid order after X days',
+				'FriendlyName' =>  'Cancel unpaid orders and invoices after X days',
 				'Type' => 'text',
 				'Size' => '25',
 				'Default' => '14',

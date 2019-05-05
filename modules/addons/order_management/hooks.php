@@ -15,7 +15,33 @@
  * @author Dylan Hansch <dylan@dylanhansch.net>
  */
 
+if (!defined('WHMCS')) {
+	die('This file cannot be accessed directly.');
+}
+
+use WHMCS\Database\Capsule;
+
 add_hook('PreAutomationTask', 1, function($vars) {
+	// Get number of days after which to cancel an order and/or invoice that is still unpaid. Default is 14 days.
+	$cancelAfterDays = '14';
+	try {
+		$query = Capsule::table('tbladdonmodules')
+			->select('value')
+			->where('module', 'order_management')
+			->where('setting', 'cancelAfter')
+			->first();
+
+		$cancelAfterResult = trim($query->value);
+
+		if ($cancelAfterResult != '') {
+			$cancelAfterDays = $cancelAfterResult;
+		}
+	} catch (\Exception $e) {
+		logActivity('[Order Management] ' . $e);
+	}
+
+	logActivity($cancelAfterDays);
+
 	/*
 	 * Accept paid but still pending orders and cancel aged orders
 	 */
@@ -52,7 +78,7 @@ add_hook('PreAutomationTask', 1, function($vars) {
 				if ($acceptOrderResults['result'] != 'success') {
 					logActivity('[Order Management] An error occured accepting order ' . $orderID . ': ' . $acceptOrderResults['result']);
 				}
-			} else if (strtotime($date) < strtotime('-14 days')) {
+			} else if (strtotime($date) < strtotime('-' . $cancelAfterDays . ' days')) {
 				$command = 'CancelOrder';
 				$postData = array(
 					'orderid' => $orderID,
@@ -87,7 +113,7 @@ add_hook('PreAutomationTask', 1, function($vars) {
 			$invoiceID = $invoice['id'];
 			$date = $invoice['duedate'];
 
-			if(strtotime($date) < strtotime('-14 days')) {
+			if(strtotime($date) < strtotime('-' . $cancelAfterDays . ' days')) {
 				$command = 'UpdateInvoice';
 				$values = array(
 					'invoiceid' => $invoiceID,
