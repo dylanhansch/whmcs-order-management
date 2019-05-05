@@ -28,8 +28,7 @@ add_hook('PreAutomationTask', 1, function($vars) {
 	$results = localAPI($command, $values);
 
 	if ($results['result'] == 'success') {
-		$numReturned = $results['numreturned'] - 1;
-		for ($i = 0; $i <= $numReturned; $i++) {
+		for ($i = 0; $i < $results['numreturned']; $i++) {
 			$order = $results['orders']['order'][$i];
 
 			$orderID = $order['id'];
@@ -82,10 +81,11 @@ add_hook('PreAutomationTask', 1, function($vars) {
 	$results = localAPI($command, $values);
 
 	if ($results['result'] == 'success') {
-		$numReturned = $results['numreturned'] - 1;
-		for ($i = 0; $i <= $numReturned; $i++) {
-			$invoiceID = $results['invoices']['invoice'][$i]['id'];
-			$date = $results['invoices']['invoice'][$i]['duedate'];
+		for ($i = 0; $i < $results['numreturned']; $i++) {
+			$invoice = $results['invoices']['invoice'][$i];
+
+			$invoiceID = $invoice['id'];
+			$date = $invoice['duedate'];
 
 			if(strtotime($date) < strtotime("-14 days")) {
 				$command = 'UpdateInvoice';
@@ -121,11 +121,13 @@ add_hook('InvoicePaid', 1, function($vars) {
 	$results = localAPI($command, $values);
 
 	if ($results['result'] == 'success') {
-		$numReturned = $results['numreturned'] - 1;
-		for ($i = 0; $i <= $numReturned; $i++) {
-			$invoiceID = $results['orders']['order'][$i]['invoiceid'];
+		for ($i = 0; $i < $results['numreturned']; $i++) {
+			$order = $results['orders']['order'][$i];
+
+			$invoiceID = $order['invoiceid'];
+
 			if ($invoiceID == $paidInvoiceID) {
-				$orderID = $results['orders']['order'][$i]['id'];
+				$orderID = $order['id'];
 
 				$command = 'AcceptOrder';
 				$values = array(
