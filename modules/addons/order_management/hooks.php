@@ -17,7 +17,7 @@
 
 add_hook('PreAutomationTask', 1, function($vars) {
     /*
-     * Cancel aged orders
+     * Accept paid but still pending orders and cancel aged orders
      */
     $command = 'GetOrders';
     $values = array(
@@ -30,10 +30,30 @@ add_hook('PreAutomationTask', 1, function($vars) {
     if ($results['result'] == 'success') {
         $numReturned = $results['numreturned'] - 1;
         for ($i = 0; $i <= $numReturned; $i++) {
-            $orderID = $results['orders']['order'][$i]['id'];
-            $date = $results['orders']['order'][$i]['date'];
-            
-            if(strtotime($date) < strtotime("-14 days")) {
+            $order = $results['orders']['order'][$i];
+
+            $orderID = $order['id'];
+            $date = $order['date'];
+            $paymentStatus = $order['paymentstatus'];
+
+            // Don't want to automate anything with free orders for example
+            if ($paymentStatus == null) {
+                logActivity('[Order Management] Skipping order #' . $orderID . '. Payment status null. Might be a free order. Manual intervention required for this order.');
+                continue;
+            }
+
+            if ($paymentStatus == 'Paid') {
+                $command = 'AcceptOrder';
+                $values = array(
+                    'orderid' => $orderID,
+                );
+
+                $acceptOrderResults = localAPI($command, $values);
+
+                if ($acceptOrderResults['result'] != 'success') {
+                    logActivity("An error occured accepting order $orderID: " . $acceptOrderResults['result']);
+                }
+            } else if (strtotime($date) < strtotime("-14 days")) {
                 $command = 'CancelOrder';
                 $postData = array(
                     'orderid' => $orderID,
