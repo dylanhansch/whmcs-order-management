@@ -11,7 +11,7 @@
  * - Cancel unpaid invoice after 14 days
  * - Accept paid orders
  *
- * @version 1.0
+ * @version 1.1
  * @author Dylan Hansch <dylan@dylanhansch.net>
  */
  
@@ -25,7 +25,7 @@ function order_management_config() {
 		'description' => 'Automates/extends several order related tasks.',
 		'author' => 'Dylan Hansch',
 		'language' => 'english',
-		'version' => '1.0',
+		'version' => '1.1',
 		'fields' => array(
 			'cancelAfter' => array(
 				'FriendlyName' =>  'Cancel unpaid orders and invoices after X days',

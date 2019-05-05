@@ -11,7 +11,7 @@
  * - Cancel unpaid invoice after 14 days
  * - Accept paid orders
  *
- * @version 1.0
+ * @version 1.1
  * @author Dylan Hansch <dylan@dylanhansch.net>
  */
 
