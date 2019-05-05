@@ -50,7 +50,7 @@ add_hook('PreAutomationTask', 1, function($vars) {
 				$acceptOrderResults = localAPI($command, $values);
 
 				if ($acceptOrderResults['result'] != 'success') {
-					logActivity("An error occured accepting order $orderID: " . $acceptOrderResults['result']);
+					logActivity("[Order Management] An error occured accepting order $orderID: " . $acceptOrderResults['result']);
 				}
 			} else if (strtotime($date) < strtotime("-14 days")) {
 				$command = 'CancelOrder';
@@ -61,12 +61,12 @@ add_hook('PreAutomationTask', 1, function($vars) {
 				$cancelOrderResults = localAPI($command, $postData);
 
 				if ($cancelOrderResults['result'] != 'success') {
-					logActivity("An error occured with cancelling order $orderID: " . $cancelOrderResults['result']);
+					logActivity("[Order Management] An error occured with cancelling order $orderID: " . $cancelOrderResults['result']);
 				}
 			}
 		}
 	} else {
-		logActivity("An error occured with getting orders: " . $results['result']);
+		logActivity("[Order Management] An error occured with getting orders: " . $results['result']);
 	}
 
 	/*
@@ -97,12 +97,12 @@ add_hook('PreAutomationTask', 1, function($vars) {
 				$cancelInvoiceResults = localAPI($command, $values);
 
 				if ($cancelInvoiceResults['result'] != 'success') {
-					logActivity("An error occured with cancelling invoice $invoiceID: " . $cancelInvoiceResults['result']);
+					logActivity("[Order Management] An error occured with cancelling invoice $invoiceID: " . $cancelInvoiceResults['result']);
 				}
 			}
 		}
 	} else {
-		logActivity("An error occured with getting invoices: " . $results['result']);
+		logActivity("[Order Management] An error occured with getting invoices: " . $results['result']);
 	}
 });
 
@@ -137,11 +137,11 @@ add_hook('InvoicePaid', 1, function($vars) {
 				$acceptOrderResults = localAPI($command, $values);
 
 				if ($acceptOrderResults['result'] != 'success') {
-					logActivity("An error occured accepting order $invoiceID: " . $acceptOrderResults['result']);
+					logActivity("[Order Management] An error occured accepting order $invoiceID: " . $acceptOrderResults['result']);
 				}
 			}
 		}
 	} else {
-		logActivity("An error occured with getting orders: " . $results['result']);
+		logActivity("[Order Management] An error occured with getting orders: " . $results['result']);
 	}
 });
