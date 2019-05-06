@@ -174,6 +174,9 @@ add_hook('InvoicePaid', 1, function($vars) {
 					if ($acceptOrderResults['result'] != 'success') {
 						logActivity('[Order Management] An error occured accepting order ' . $orderID . ': ' . $acceptOrderResults['result']);
 					}
+
+					// Reduce unnecessary loops
+					break;
 				}
 			}
 		} else {
