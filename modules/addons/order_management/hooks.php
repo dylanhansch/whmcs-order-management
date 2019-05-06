@@ -136,36 +136,50 @@ add_hook('InvoicePaid', 1, function($vars) {
 	/*
 	 * Accept paid orders
 	 */
-	$command = 'GetOrders';
+	$command = 'GetInvoice';
 	$values = array(
-		'status' => 'Pending',
-		'limitnum' => '100',
+		'invoiceid' => $paidInvoiceID
 	);
 
-	$results = localAPI($command, $values);
+	$invoiceResults = localAPI($command, $values);
 
-	if ($results['result'] == 'success') {
-		for ($i = 0; $i < $results['numreturned']; $i++) {
-			$order = $results['orders']['order'][$i];
+	if ($invoiceResults['result'] == 'success') {
+		$userID = $invoiceResults['userid'];
 
-			$invoiceID = $order['invoiceid'];
+		$command = 'GetOrders';
+		$values = array(
+			'status' => 'Pending',
+			'limitnum' => '100',
+			'userid' => $userID
+		);
 
-			if ($invoiceID == $paidInvoiceID) {
-				$orderID = $order['id'];
+		$orderResults = localAPI($command, $values);
 
-				$command = 'AcceptOrder';
-				$values = array(
-					'orderid' => $orderID,
-				);
+		if ($orderResults['result'] == 'success') {
+			for ($i = 0; $i < $orderResults['numreturned']; $i++) {
+				$order = $orderResults['orders']['order'][$i];
 
-				$acceptOrderResults = localAPI($command, $values);
+				$invoiceID = $order['invoiceid'];
 
-				if ($acceptOrderResults['result'] != 'success') {
-					logActivity('[Order Management] An error occured accepting order ' . $orderID . ': ' . $acceptOrderResults['result']);
+				if ($invoiceID == $paidInvoiceID) {
+					$orderID = $order['id'];
+
+					$command = 'AcceptOrder';
+					$values = array(
+						'orderid' => $orderID,
+					);
+
+					$acceptOrderResults = localAPI($command, $values);
+
+					if ($acceptOrderResults['result'] != 'success') {
+						logActivity('[Order Management] An error occured accepting order ' . $orderID . ': ' . $acceptOrderResults['result']);
+					}
 				}
 			}
+		} else {
+			logActivity('[Order Management] An error occured with getting orders: ' . $orderResults['result']);
 		}
 	} else {
-		logActivity('[Order Management] An error occured with getting orders: ' . $results['result']);
+		logActivity('[Order Management] An error occured with getting invoice: ' . $invoiceResults['result']);
 	}
 });
