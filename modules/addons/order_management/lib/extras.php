@@ -58,6 +58,11 @@ function acceptPaidPendingOrdersIsEnabled() {
 	return isSettingOn('enableAcceptPaidPendingOrders');
 }
 
+/**
+ * Unless there is an entry in the database for the setting with a blank value, will return true
+ * @param $setting
+ * @return bool
+ */
 function isSettingOn($setting) {
 	$isEnabled = true;
 
@@ -70,6 +75,8 @@ function isSettingOn($setting) {
 
 		$result = trim($query->value);
 
+		// When there is no entry in the database, $result == ''.
+		// This way when there is no entry in the database, the default is "true".
 		if (count($query) == 1 && $result == '') {
 			$isEnabled = false;
 		}
