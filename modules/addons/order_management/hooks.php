@@ -19,26 +19,14 @@ if (!defined('WHMCS')) {
 	die('This file cannot be accessed directly.');
 }
 
-use WHMCS\Database\Capsule;
+require_once(__DIR__ . '/lib/extras.php');
 
-add_hook('PreAutomationTask', 1, function($vars) {
-	// Get number of days after which to cancel an order and/or invoice that is still unpaid. Default is 14 days.
-	$cancelAfterDays = '14';
-	try {
-		$query = Capsule::table('tbladdonmodules')
-			->select('value')
-			->where('module', 'order_management')
-			->where('setting', 'cancelAfter')
-			->first();
-
-		$cancelAfterResult = trim($query->value);
-
-		if ($cancelAfterResult != '') {
-			$cancelAfterDays = $cancelAfterResult;
-		}
-	} catch (\Exception $e) {
-		logActivity('[Order Management] ' . $e);
+add_hook('AfterCronJob', 1, function($vars) {
+	if (!acceptPaidPendingOrdersIsEnabled() && !cancelAgedOrdersIsEnabled()) {
+		return;
 	}
+
+	$cancelAfterDays = cancelAfterDays();
 
 	/*
 	 * Accept paid but still pending orders and cancel aged orders
@@ -65,7 +53,7 @@ add_hook('PreAutomationTask', 1, function($vars) {
 				continue;
 			}
 
-			if ($paymentStatus == 'Paid') {
+			if ($paymentStatus == 'Paid' && acceptPaidPendingOrdersIsEnabled()) {
 				$command = 'AcceptOrder';
 				$values = array(
 					'orderid' => $orderID,
@@ -76,7 +64,7 @@ add_hook('PreAutomationTask', 1, function($vars) {
 				if ($acceptOrderResults['result'] != 'success') {
 					logActivity('[Order Management] An error occured accepting order ' . $orderID . ': ' . $acceptOrderResults['result']);
 				}
-			} else if (strtotime($date) < strtotime('-' . $cancelAfterDays . ' days')) {
+			} else if (strtotime($date) < strtotime('-' . $cancelAfterDays . ' days') && cancelAgedOrdersIsEnabled()) {
 				$command = 'CancelOrder';
 				$postData = array(
 					'orderid' => $orderID,
@@ -92,6 +80,14 @@ add_hook('PreAutomationTask', 1, function($vars) {
 	} else {
 		logActivity('[Order Management] An error occured with getting orders: ' . $results['result']);
 	}
+});
+
+add_hook('AfterCronJob', 2, function($vars) {
+	if (!cancelAgedInvoicesIsEnabled()) {
+		return;
+	}
+
+	$cancelAfterDays = cancelAfterDays();
 
 	/*
 	 * Cancel aged invoices
@@ -131,6 +127,10 @@ add_hook('PreAutomationTask', 1, function($vars) {
 });
 
 add_hook('InvoicePaid', 1, function($vars) {
+	if (!acceptPaidPendingOrdersIsEnabled()) {
+		return;
+	}
+
 	$paidInvoiceID = $vars['invoiceid'];
 
 	/*

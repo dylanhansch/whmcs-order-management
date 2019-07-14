@@ -28,12 +28,30 @@ function order_management_config() {
 		'version' => '1.2',
 		'fields' => array(
 			'cancelAfter' => array(
-				'FriendlyName' =>  'Cancel unpaid orders and invoices after X days',
+				'FriendlyName' =>  'Cancel unpaid orders and invoices after this many days',
 				'Type' => 'text',
 				'Size' => '25',
 				'Default' => '14',
 				'Description' => 'e.g. 14 days',
 			),
+			'enableCancelAgedOrders' => array(
+				'FriendlyName' => 'Cancel unpaid pending orders after the configured number of days',
+				'Type' => 'yesno',
+				'Size' => '25',
+				'Default' => 'on'
+			),
+			'enableCancelAgedInvoices' => array(
+				'FriendlyName' => 'Cancel unpaid invoices after the configured number of days',
+				'Type' => 'yesno',
+				'Size' => '25',
+				'Default' => 'on'
+			),
+			'enableAcceptPaidPendingOrders' => array(
+				'FriendlyName' => 'Accept paid pending orders',
+				'Type' => 'yesno',
+				'Size' => '25',
+				'Default' => 'on'
+			)
 		)
 	);
 }
