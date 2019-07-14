@@ -23,6 +23,7 @@ use WHMCS\Database\Capsule;
 
 /**
  * Get number of days after which to cancel an order and/or invoice that is still unpaid. Default is 14 days.
+ * @return string
  */
 function cancelAfterDays() {
 	$cancelAfterDays = '14';
