@@ -6,11 +6,6 @@
  * cancelling an order after 14 days it goes unpaid.
  * Will eventually rewrite description.
  *
- * Currently implemented features:
- * - Cancel unpaid order after 14 days
- * - Cancel unpaid invoice after 14 days
- * - Accept paid orders
- *
  * @version 1.3
  * @author Dylan Hansch <dylan@dylanhansch.net>
  */

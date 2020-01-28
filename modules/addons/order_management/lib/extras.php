@@ -1,20 +1,4 @@
 <?php
-/**
- * WHMCS Order Management
- *
- * This addon automates several order related tasks such as
- * cancelling an order after 14 days it goes unpaid.
- * Will eventually rewrite description.
- *
- * Currently implemented features:
- * - Cancel unpaid order after 14 days
- * - Cancel unpaid invoice after 14 days
- * - Accept paid orders
- *
- * @version 1.3
- * @author Dylan Hansch <dylan@dylanhansch.net>
- */
-
 if (!defined('WHMCS')) {
 	die('This file cannot be accessed directly.');
 }
