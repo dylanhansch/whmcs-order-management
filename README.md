@@ -1,3 +1,5 @@
+# ⚠️ This project is no longer maintained
+
 # WHMCS Order Management Addon
 WHMCS module to automate several order management tasks. Here are the following tasks currently automated:
 - Pending order cancellation after 'X' days
